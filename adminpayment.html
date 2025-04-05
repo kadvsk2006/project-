@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Payments</title>
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            background: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 10px;
+        }
+
+        .sidebar h2 {
+            font-size: 22px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            padding: 12px 20px;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: #34495e;
+            padding-left: 25px;
+        }
+
+        .sidebar a.active {
+            background: #1abc9c;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .header {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .orders-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #2c3e50;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 180px;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Admin Panel</h2>
+    <a href="admindash.html">Home</a>
+    <a href="adminmenu.html">Menu & Items</a>
+      <a href="adminorder.html">Orders</a>
+      <a href="adminpayment.html">Payments</a>
+      <a href="adminlogin.html" onclick="logout()">Logout</a>
+  </div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <h1>Admin Payments</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Customer Name</th>
+                <th>Payment Method</th>
+                <th>Amount (₹)</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dummy data for now -->
+            <tr>
+                <td>Rahul Sharma</td>
+                <td>UPI</td>
+                <td>₹1,200</td>
+                <td>Success</td>
+                <td>2025-03-31</td>
+            </tr>
+            <tr>
+                <td>Meera Nair</td>
+                <td>Credit Card</td>
+                <td>₹890</td>
+                <td>Pending</td>
+                <td>2025-03-30</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

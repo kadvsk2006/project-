@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Savory Seasons - Payment</title>
+  <style>
+    /* Base styles and resets */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333333;
+      background-color: #f7f5f0;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    /* Header styles with floating effect - matching home page */
+    .header {
+      background-color: rgba(66, 39, 59, 0.95);
+      color: white;
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo span {
+      color: #e6c095;
+    }
+
+    nav {
+      display: flex;
+      gap: 5px;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      background-color: rgba(230, 192, 149, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Page title */
+    .page-title {
+      text-align: center;
+      padding: 40px 20px;
+      background-color: #42273b;
+      color: white;
+    }
+
+    .page-title h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .page-title p {
+      font-size: 1.1rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Payment container */
+    .payment-container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Order summary */
+    .order-summary {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #f0ebe3;
+    }
+
+    .order-summary h2 {
+      color: #42273b;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    .order-list {
+      list-style: none;
+      margin-bottom: 20px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0ebe3;
+    }
+
+    .order-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.2rem;
+      font-weight: bold;
+      padding: 15px 0;
+      margin-top: 10px;
+    }
+
+    /* Payment methods */
+    .payment-methods {
+      margin-bottom: 30px;
+    }
+
+    .payment-methods h2 {
+      color: #42273b;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    .payment-option {
+      margin-bottom: 15px;
+      padding: 15px;
+      border: 1px solid #f0ebe3;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .payment-option:hover {
+      border-color: #e6c095;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .payment-option.selected {
+      border-color: #e6c095;
+      background-color: rgba(230, 192, 149, 0.1);
+    }
+
+    .payment-option-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .payment-option-header input {
+      width: 20px;
+      height: 20px;
+      accent-color: #e6c095;
+    }
+
+    .payment-option-header label {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #42273b;
+    }
+
+    .payment-details {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px dashed #f0ebe3;
+      display: none;
+    }
+
+    .payment-details.show {
+      display: block;
+    }
+
+    .upi-details {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .upi-input {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .upi-qr {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .upi-qr img {
+      max-width: 200px;
+      border: 1px solid #f0ebe3;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    /* Complete order button */
+    .complete-order-btn {
+      background-color: #e6c095;
+      color: #42273b;
+      border: none;
+      padding: 15px 25px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .complete-order-btn:hover {
+      background-color: #d9b087;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #42273b;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 5px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast-icon {
+      margin-right: 10px;
+      font-size: 1.2rem;
+    }
+
+    /* Footer - matching home page */
+    .social-icons {
+      display: flex;
+      gap: 15px;
+    }
+
+    .social-icon img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+
+    .copyright {
+      background-color: #331d2e;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      font-size: 0.9rem;
+    }
+
+    .footer-nav {
+      background: linear-gradient(to bottom, #42273b, #331d2e);
+      padding: 50px 5%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      align-items: flex-start;
+    }
+
+    .column {
+      margin: 15px;
+      min-width: 150px;
+    }
+
+    .column h4 {
+      margin-bottom: 20px;
+      font-weight: bold;
+      color: #fff;
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .column h4::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background-color: #e6c095;
+    }
+
+    .column ul {
+      list-style: none;
+    }
+
+    .column li {
+      margin-bottom: 12px;
+    }
+
+    .column a {
+      text-decoration: none;
+      color: #dfdfdf;
+      transition: all 0.3s ease;
+    }
+
+    .column a:hover {
+      color: #e6c095;
+      padding-left: 5px;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        padding: 15px;
+      }
+      
+      .logo {
+        margin-bottom: 15px;
+      }
+      
+      nav {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      .nav-link {
+        margin: 5px;
+      }
+      
+      .payment-container {
+        padding: 20px;
+        margin: 20px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .page-title h1 {
+        font-size: 2rem;
+      }
+      
+      .payment-option-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header with navigation -->
+  <div class="header">
+    <a href="welcomepage.html" class="logo">Savory <span>Seasons</span></a>
+    <nav>
+      <a href="order.html" class="nav-link">Menu&Orders</a>
+      <a href="reservation page.html" class="nav-link">Reservations</a>
+      <a href="payment.html" class="nav-link">Payment</a>
+    </nav>
+  </div>
+
+  <!-- Page title -->
+  <div class="page-title">
+    <h1>Payment</h1>
+    <p>Complete your order with our secure payment options.</p>
+  </div>
+
+  <div class="payment-container">
+    <!-- Order summary -->
+    <div class="order-summary">
+      <h2>Order Summary</h2>
+      <ul class="order-list" id="orderList"></ul>
+      <div class="order-total">
+        <span>Total Amount:</span>
+        <span id="orderTotal">₹0</span>
+      </div>
+    </div>
+
+    <!-- Payment methods -->
+    <div class="payment-methods">
+      <h2>Select Payment Method</h2>
+      
+      <!-- UPI Payment -->
+      <div class="payment-option" onclick="selectPayment('upi')">
+        <div class="payment-option-header">
+          <input type="radio" id="upi" name="payment" value="upi">
+          <label for="upi">UPI Payment</label>
+        </div>
+        <div class="payment-details" id="upi-details">
+          <div class="upi-details">
+            <input type="text" class="upi-input" placeholder="Enter your UPI ID (e.g., name@upi)" id="upiId">
+            <div class="upi-qr">
+              <p>Or scan this QR code:</p>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="UPI QR Code">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Cash on Delivery -->
+      <div class="payment-option" onclick="selectPayment('cash')">
+        <div class="payment-option-header">
+          <input type="radio" id="cash" name="payment" value="cash">
+          <label for="cash">Cash on Delivery</label>
+        </div>
+        <div class="payment-details" id="cash-details">
+          <p>You will pay the full amount when your order is delivered.</p>
+          <p>Please keep the exact change ready if possible.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Complete order button -->
+    <button class="complete-order-btn" onclick="completeOrder()">Complete Order</button>
+  </div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast">
+    <span class="toast-icon">✓</span>
+    <span id="toastMessage"></span>
+  </div>
+
+  <!-- Footer navigation -->
+  <div class="footer-nav">
+    <div class="column">
+      <h4>About Us</h4>
+      <ul>
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Our Team</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+
+    <div class="column">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#">Make a Reservation</a></li>
+        <li style="color:white;"> Contact Us: 99995846954</li>
+      </ul>
+    </div>
+
+    <div class="column">
+      <h4>Opening Hours</h4>
+      <div class="opening-hours">
+        <p><span class="day">Monday - Thursday:</span> <span>11:30 AM - 10:00 PM</span></p>
+        <p><span class="day">Friday - Saturday:</span> <span>11:30 AM - 11:00 PM</span></p>
+        <p><span class="day">Sunday:</span> <span>10:00 AM - 9:00 PM</span></p>
+        <p><span class="day">Brunch:</span> <span>Weekends 10:00 AM - 2:00 PM</span></p>
+      </div>
+    </div>
+
+    <div class="column">
+      <h4>Connect With Us</h4>
+      <div class="social-icons">
+        <a href="#" class="social-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Instagram_logo_2022.svg/640px-Instagram_logo_2022.svg.png" alt="Instagram"></a>
+        <a href="#" class="social-icon"><img src="https://e7.pngegg.com/pngimages/708/311/png-clipart-twitter-twitter-thumbnail.png" alt="Twitter"></a>
+        <a href="#" class="social-icon"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRokEYt0yyh6uNDKL8uksVLlhZ35laKNQgZ9g&s" alt="LinkedIn"></a>
+        <a href="#" class="social-icon"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/800px-Facebook_f_logo_%282019%29.svg.png" alt="Facebook"></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copyright footer -->
+  <div class="copyright">
+    &copy; 2025 Savory Seasons Restaurant. All Rights Reserved.
+  </div>
+
+  <script>
+    // Load order data from localStorage
+    function loadOrderData() {
+      const orderData = JSON.parse(localStorage.getItem("orderData"));
+      if (!orderData) {
+        window.location.href = "order.html";
+        return;
+      }
+
+      const orderList = document.getElementById("orderList");
+      const orderTotal = document.getElementById("orderTotal");
+      
+      orderList.innerHTML = '';
+      
+      // Display order items
+      for (const [name, item] of Object.entries(orderData.items)) {
+        if (item.quantity > 0) {
+          const itemTotal = item.price * item.quantity;
+          
+          orderList.innerHTML += `
+            <li class="order-item">
+              <div>${name} × ${item.quantity}</div>
+              <div>₹${itemTotal}</div>
+            </li>
+          `;
+        }
+      }
+      
+      // Display total
+      orderTotal.textContent = `₹${orderData.total}`;
+    }
+
+    // Select payment method
+    function selectPayment(method) {
+      // Reset all options
+      const options = document.querySelectorAll('.payment-option');
+      options.forEach(option => {
+        option.classList.remove('selected');
+      });
+      
+      const details = document.querySelectorAll('.payment-details');
+      details.forEach(detail => {
+        detail.classList.remove('show');
+      });
+      
+      // Select the clicked option
+      const selectedOption = document.querySelector(`.payment-option:has(#${method})`);
+      selectedOption.classList.add('selected');
+      
+      // Show details for selected method
+      const selectedDetails = document.getElementById(`${method}-details`);
+      selectedDetails.classList.add('show');
+      
+      // Check the radio button
+      document.getElementById(method).checked = true;
+    }
+
+    // Complete order
+    function completeOrder() {
+      const upiOption = document.getElementById('upi');
+      const cashOption = document.getElementById('cash');
+      
+      if (!upiOption.checked && !cashOption.checked) {
+        showToast("Please select a payment method");
+        return;
+      }
+      
+      if (upiOption.checked) {
+        const upiId = document.getElementById('upiId').value;
+        if (!upiId) {
+          showToast("Please enter your UPI ID");
+          return;
+        }
+      }
+      
+      // Show success message
+      showToast("Order placed successfully! Redirecting to confirmation page...");
+      
+      // Clear order data
+            // Clear order data
+            setTimeout(() => {
+        localStorage.removeItem("orderData");
+        window.location.href = "welcomepage.html";
+      }, 2000);
+    }
+
+    // Show toast notification
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      const toastMessage = document.getElementById("toastMessage");
+      
+      toastMessage.textContent = message;
+      toast.classList.add("show");
+      
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3000);
+    }
+
+    // Load order data when page loads
+    window.onload = function() {
+      loadOrderData();
+    };
+  </script>
+</body>
+</html>
+

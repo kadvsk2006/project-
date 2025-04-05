@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <style>
+    /* Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background-color: #f4f4f4;
+    }
+
+    .sidebar {
+      width: 220px;
+      background: #2c3e50;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 10px;
+    }
+
+    .sidebar h2 {
+      font-size: 22px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .sidebar a {
+      text-decoration: none;
+      color: white;
+      font-size: 18px;
+      padding: 12px 20px;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      background: #34495e;
+      padding-left: 25px;
+    }
+
+    .sidebar a.active {
+      background: #1abc9c;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .header {
+      background: #3498db;
+      color: white;
+      padding: 15px;
+      font-size: 24px;
+      text-align: center;
+      border-radius: 8px;
+    }
+
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      margin: 30px 0;
+      gap: 20px;
+    }
+
+    .stat-box {
+      background: white;
+      padding: 30px;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: 0.3s;
+      flex: 1;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .stat-box h3 {
+      font-size: 28px;
+      color: #2c3e50;
+    }
+
+    .stat-box p {
+      font-size: 18px;
+      color: #555;
+    }
+
+    .table-container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background: #2c3e50;
+      color: white;
+    }
+
+    tr:hover {
+      background: #f1f1f1;
+    }
+
+    @media (max-width: 768px) {
+      .stats-container {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h2>Admin Panel</h2>
+  <a href="#" class="active">Home</a>
+  <a href="adminmenu.html">Menu & Items</a>
+  <a href="adminorder.html">Orders</a>
+  <a href="adminpayment.html">Payments</a>
+  <a href="adminlogin.html" onclick="logout()">Logout</a>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <div class="header">Admin Dashboard</div>
+
+  <div class="stats-container">
+    <div class="stat-box">
+      <h3>12</h3>
+      <p>New Orders</p>
+    </div>
+    
+    <div class="stat-box">
+      <h3>35</h3>
+      <p>Menu & Items</p>
+    </div>
+
+    <div class="stat-box">
+      <h3>₹ 45,000</h3>
+      <p>Total Payments</p>
+    </div>
+  </div>
+
+  <!-- Customer Table -->
+  <div class="table-container">
+    <h2>Latest Customers</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Phone</th>
+        </tr>
+      </thead>
+      <tbody id="customerList">
+        <!-- Dynamic customer data will be inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Order Statistics (dummy for now) -->
+  <div class="table-container">
+    <h2>Order Statistics</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Item</th>
+          <th>Price</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>#001</td>
+          <td>Paneer Tikka</td>
+          <td>₹250</td>
+          <td>Completed</td>
+        </tr>
+        <tr>
+          <td>#002</td>
+          <td>Garlic Naan</td>
+          <td>₹350</td>
+          <td>Pending</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+  // Inject backend data into dashboard
+  window.addEventListener('DOMContentLoaded', () => {
+    const customerList = document.getElementById('customerList');
+
+    fetch('admindash.php')
+      .then(res => res.json())
+      .then(users => {
+        if (users.length > 0) {
+          users.forEach(user => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${user.name}</td>
+              <td>${user.email}</td>
+              <td>${user.phone}</td>
+            `;
+            customerList.appendChild(row);
+          });
+        } else {
+          customerList.innerHTML = `<tr><td colspan="3">No customers yet!</td></tr>`;
+        }
+      })
+      .catch(error => {
+        console.error("Failed to fetch user data:", error);
+        customerList.innerHTML = `<tr><td colspan="3">Error loading customers</td></tr>`;
+      });
+  });
+</script>
+
+</body>
+</html>
